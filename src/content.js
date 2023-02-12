@@ -27,7 +27,7 @@ function callback_game(mutationsList, observer) {
     //     mutation.removedNodes;
     // }
     const result_data = app.getElementsByClassName('result_data')[0];
-    if (result_data) {
+    if (flag_retry && result_data) {
         console.log('callback_game(): ゲームが終了しました');
         const result_list = result_data.children[0];
         var str = '';
@@ -48,13 +48,16 @@ function callback_game(mutationsList, observer) {
             console.info(data);
         });
         /* 終了処理 (再び起動する方法を考える必要がある) */
-        obs_game.disconnect();
-        console.log('callback_game(): obs_gameの監視が終了しました');
+        flag_retry = 0;
+        // obs_game.disconnect();
+        // console.log('callback_game(): obs_gameの監視が終了しました');
+    } else if (typing_content.contentWindow.document.getElementById('example_container')) {
+        flag_retry = 1;
     }
 }
 function callback(mutationsList, observer) {
     console.log('callback(): 関数が実行されました');
-    const typing_content = document.getElementById('typing_content'); // ゲームのウィンドウ(iframe)
+    typing_content = document.getElementById('typing_content'); // ゲームのウィンドウ(iframe)
     if (typing_content) {
         console.log('callback(): ゲームが開かれました');
         app = typing_content.contentWindow.document.getElementById('app');
@@ -62,12 +65,14 @@ function callback(mutationsList, observer) {
             console.log('callback(): ゲームが読み込まれました');
             console.log('callback(): ゲーム画面の監視を開始します');
             obs_game.observe(app, options);
-            obs.disconnect();
-            console.log('callback(): bodyの監視が終了しました');
+            // obs.disconnect();
+            // console.log('callback(): bodyの監視が終了しました');
         }
     }
 }
 var app; // ゲーム
+var typing_content;
+var flag_retry = 1;
 const obs = new MutationObserver(callback);
 const obs_game = new MutationObserver(callback_game);
 const target = document.body;
