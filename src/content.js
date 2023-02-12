@@ -33,8 +33,7 @@ function callback_game(mutationsList, observer) {
         var str = '';
         var flag_end = 1;
         for (const result of result_list.children) {
-            console.log(result.children[0].textContent); // 属性
-            console.log(result.children[1].textContent); // 値
+            console.log(result.children[0].textContent + ': ' + result.children[1].textContent); // 属性: 値
             str += result.children[1].textContent + ',';
             if (result.children[1].textContent == '-') { // 中断した場合
                 flag_end = 0;
