@@ -43,7 +43,6 @@ function callback(mutationsList, observer) {
     const typing_content = document.getElementById('typing_content'); // ゲームのウィンドウ(iframe)
     if (typing_content) {
         console.log('callback(): ゲームが開かれました');
-        const obs_game = new MutationObserver(callback_game);
         app = typing_content.contentWindow.document.getElementById('app');
         if (app) {
             console.log('callback(): ゲームが読み込まれました');
@@ -56,6 +55,7 @@ function callback(mutationsList, observer) {
 }
 var app; // ゲーム
 const obs = new MutationObserver(callback);
+const obs_game = new MutationObserver(callback_game);
 const target = document.body;
 if (!target) {
     console.error('bodyの取得に失敗しました');
