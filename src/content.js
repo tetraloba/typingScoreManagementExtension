@@ -31,14 +31,20 @@ function callback_game(mutationsList, observer) {
         console.log('callback_game(): ゲームが終了しました');
         const result_list = result_data.children[0];
         var str = '';
+        var flag_end = 1;
         for (const result of result_list.children) {
             console.log(result.children[0].textContent); // 属性
             console.log(result.children[1].textContent); // 値
             str += result.children[1].textContent + ',';
+            if (result.children[1].textContent == '-') { // 中断した場合
+                flag_end = 0;
+            }
         }
-        chrome.storage.local.set({[new Date().getTime()] : str}).then(() => {
-            console.log("Value is set to " + str);
-        });
+        if (flag_end) { // 中断していない場合は記録する
+            chrome.storage.local.set({[new Date().getTime()] : str}).then(() => {
+                console.log("Value is set to " + str);
+            });
+        }
         chrome.storage.local.get(null, function (data) {
             console.info(data);
         });
