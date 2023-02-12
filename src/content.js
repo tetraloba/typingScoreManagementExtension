@@ -61,7 +61,7 @@ function callback(mutationsList, observer) {
         app = typing_content.contentWindow.document.getElementById('app');
         if (app) {
             console.log('callback(): ゲームが読み込まれました');
-            console.log('callback(): ゲーム画面の開始を開始します');
+            console.log('callback(): ゲーム画面の監視を開始します');
             obs_game.observe(app, options);
             obs.disconnect();
             console.log('callback(): bodyの監視が終了しました');
