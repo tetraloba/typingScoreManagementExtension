@@ -30,20 +30,18 @@ function callback_game(mutationsList, observer) {
     if (result_data) {
         console.log('callback_game(): ゲームが終了しました');
         const result_list = result_data.children[0];
+        var str = '';
         for (const result of result_list.children) {
             console.log(result.children[0].textContent); // 属性
             console.log(result.children[1].textContent); // 値
             str += result.children[1].textContent + ',';
         }
-        str += '\n';
-        /* ファイルとそのURLを作成して表示 */
-        var str_url = URL.createObjectURL(new Blob([str], {type: "text/plain"}));
-        // const comment = app.getElementById('comment'); // 何故かできない。
-        const comment = app.children[0].children[0].children[2];
-        var new_element = document.createElement("a");
-        new_element.href = str_url;
-        new_element.textContent = 'DL here!';
-        comment.appendChild(new_element);
+        chrome.storage.local.set({[new Date().getTime()] : str}).then(() => {
+            console.log("Value is set to " + str);
+        });
+        chrome.storage.local.get(null, function (data) {
+            console.info(data);
+        });
         /* 終了処理 (再び起動する方法を考える必要がある) */
         obs_game.disconnect();
         console.log('callback_game(): obs_gameの監視が終了しました');
@@ -65,7 +63,6 @@ function callback(mutationsList, observer) {
     }
 }
 var app; // ゲーム
-var str = 'test:';
 const obs = new MutationObserver(callback);
 const obs_game = new MutationObserver(callback_game);
 const target = document.body;

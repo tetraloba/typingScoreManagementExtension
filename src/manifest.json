@@ -28,11 +28,13 @@
     //     "default_title": "Link Checker",
     //     "default_popup": "popup.html"
     // },
+    "permissions": [
+      "tabs",
+      "storage"
+    ],
     "host_permissions": [ // 必要かどうかすら不明
-    // "tabs",
     "https://*/*",
     "http://*/*",
-    // "storage",
     "file:///*/*"
     ]
 }
