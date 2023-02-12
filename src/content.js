@@ -16,8 +16,6 @@
 console.log('test: scriptが実行されました');
 const options = {
     childList: true,
-    // charcterData: false,
-    // characterDataOldValue: false,
     attributes: true,
     subtree: true,
 }
@@ -28,35 +26,40 @@ function callback_game(mutationsList, observer) {
     //     mutation.addedNodes;
     //     mutation.removedNodes;
     // }
-    // const result_data = app.getElementsByClassName('result_data')[0];
-    // const result_list = result_data.children[0];
-    // console.log('test result_list 1');
-    // for (const result of result_list.children) {
-    //     console.log(result.children[0].textContent); // 属性
-    //     console.log(result.children[1].textContent); // 値
-    // }
+    const result_data = app.getElementsByClassName('result_data')[0];
+    if (result_data) {
+        console.log('callback_game(): ゲームが終了しました');
+        const result_list = result_data.children[0];
+        for (const result of result_list.children) {
+            console.log(result.children[0].textContent); // 属性
+            console.log(result.children[1].textContent); // 値
+        }
+        obs_game.disconnect();
+        console.log('callback_game(): obs_gameの監視が終了しました');
+    }
 }
 function callback(mutationsList, observer) {
     console.log('callback(): 関数が実行されました');
-    // const app = document.getElementById('app');
-    // if (app) {
-    //     console.log('callback(): ゲームが開かれました');
-    //     const obs_game = new MutationObserver(callback_game);
-    //     obs_game.observe(app, options);
-    //     obs.disconnect();
-    // }
-    const app = document.getElementById('typing_content');
-    if (app) {
+    const typing_content = document.getElementById('typing_content'); // ゲームのウィンドウ(iframe)
+    if (typing_content) {
         console.log('callback(): ゲームが開かれました');
         const obs_game = new MutationObserver(callback_game);
-        obs_game.observe(app, options);
-        obs.disconnect();
-        console.log('callback(): bodyの監視が終了しました');
+        app = typing_content.contentWindow.document.getElementById('app');
+        if (app) {
+            console.log('callback(): ゲームが読み込まれました');
+            console.log('callback(): ゲーム画面の開始を開始します');
+            obs_game.observe(app, options);
+            obs.disconnect();
+            console.log('callback(): bodyの監視が終了しました');
+        }
     }
 }
+var app; // ゲーム
 const obs = new MutationObserver(callback);
 const target = document.body;
-// console.log(target.children[1].children[0].children[1].textContent); // bodyが正しく取得できていることの確認
+if (!target) {
+    console.error('bodyの取得に失敗しました');
+}
 console.log('test: bodyの監視を開始します');
 obs.observe(target, options);
 console.log('test: scriptの最終行です');
