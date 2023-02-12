@@ -13,7 +13,7 @@
       "js": [
         "content.js"
       ]
-    }]
+    }],
     // "background": { // content_scriptsとの使い分けをまだ理解していない。
     //     "scripts": [
     //       "js/background.js" // 存在しないファイル
@@ -28,10 +28,11 @@
     //     "default_title": "Link Checker",
     //     "default_popup": "popup.html"
     // },
-    // "permissions": [ // 必要かどうかすら不明
+    "host_permissions": [ // 必要かどうかすら不明
     // "tabs",
-    // "https://*/*",
-    // "http://*/*",
-    // "storage"
-    // ],
+    "https://*/*",
+    "http://*/*",
+    // "storage",
+    "file:///*/*"
+    ]
 }
