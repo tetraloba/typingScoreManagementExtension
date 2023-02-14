@@ -31,10 +31,10 @@ function callback_game(mutationsList, observer) {
         // console.log('callback_game(): ゲームが終了しました');
         const result_list = result_data.children[0];
         var dd = new Date();
-        var str = dd.getFullYear().toString() + ('0'+(dd.getMonth() + 1)).slice(-2) + ('0'+dd.getDate()).slice(-2) + ('0'+dd.getHours()).slice(-2) + ('0'+dd.getMinutes()).slice(-2) + ('0'+dd.getSeconds()).slice(-2) + ',';
+        var str = dd.getFullYear().toString() + '/' + ('0'+(dd.getMonth() + 1)).slice(-2) + '/' + ('0'+dd.getDate()).slice(-2) + ' ' + ('0'+dd.getHours()).slice(-2) + ':' + ('0'+dd.getMinutes()).slice(-2) + ':' + ('0'+dd.getSeconds()).slice(-2) + ',';
         var flag_end = 1;
         for (const result of result_list.children) {
-            console.log(result.children[0].textContent + ': ' + result.children[1].textContent); // 属性: 値
+            // console.log(result.children[0].textContent + ': ' + result.children[1].textContent); // 属性: 値
             str += result.children[1].textContent + ',';
             if (result.children[1].textContent == '-') { // 中断した場合
                 flag_end = 0;
@@ -42,13 +42,29 @@ function callback_game(mutationsList, observer) {
         }
         str += document.getElementsByClassName('pp_description')[0].textContent; // 種類 (腕試しレベルチェックなど)
         if (flag_end) { // 中断していない場合は記録する
-            str = str.replace('%', '').replace('秒', '.'); // %を削除, 秒を小数点に置き換え
+            str = str.replace('%', '').replace('秒', '.').replace('分', ':'); // %を削除, 秒を小数点に置き換え 分をコロンに置き換え
             chrome.storage.local.set({[dd.getTime()] : str}).then(() => {
                 console.log("Value is set to " + str);
             });
         }
+        /* chrome.storage.localの内容を表示 */
         chrome.storage.local.get(null, function (data) {
-            console.info(data);
+            var str_blob = '';
+            var allValues = Object.values(data);
+            for (const v of allValues) {
+                str_blob += v + "\n";
+                // console.log(str_blob);
+            }
+            // console.log(data);
+            /* BlobとそのURLを作成して表示 */
+            let bom  = new Uint8Array([0xEF, 0xBB, 0xBF]); // utf-8 BOM
+            var str_url = URL.createObjectURL(new Blob([bom, str_blob], {type: "text/csv"}));
+            const comment = app.children[0].children[0].children[2];
+            var new_element = document.createElement("a");
+            new_element.download = 'result.csv';
+            new_element.href = str_url;
+            new_element.textContent = 'Download result.csv here!';
+            comment.appendChild(new_element);
         });
         /* 終了処理 (再び起動する方法を考える必要がある) */
         flag_retry = 0;
