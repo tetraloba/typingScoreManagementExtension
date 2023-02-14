@@ -20,7 +20,7 @@ const options = {
     subtree: true,
 }
 function callback_game(mutationsList, observer) {
-    console.log('callback_game(): 関数が実行されました');
+    // console.log('callback_game(): 関数が実行されました');
     // for (const mutation of mutationsList) {
     //     mutation.target;
     //     mutation.addedNodes;
@@ -28,9 +28,10 @@ function callback_game(mutationsList, observer) {
     // }
     const result_data = app.getElementsByClassName('result_data')[0];
     if (flag_retry && result_data) {
-        console.log('callback_game(): ゲームが終了しました');
+        // console.log('callback_game(): ゲームが終了しました');
         const result_list = result_data.children[0];
-        var str = '';
+        var dd = new Date();
+        var str = dd.getFullYear().toString() + ('0'+(dd.getMonth() + 1)).slice(-2) + ('0'+dd.getDate()).slice(-2) + ('0'+dd.getHours()).slice(-2) + ('0'+dd.getMinutes()).slice(-2) + ('0'+dd.getSeconds()).slice(-2) + ',';
         var flag_end = 1;
         for (const result of result_list.children) {
             console.log(result.children[0].textContent + ': ' + result.children[1].textContent); // 属性: 値
@@ -39,8 +40,10 @@ function callback_game(mutationsList, observer) {
                 flag_end = 0;
             }
         }
+        str += document.getElementsByClassName('pp_description')[0].textContent; // 種類 (腕試しレベルチェックなど)
         if (flag_end) { // 中断していない場合は記録する
-            chrome.storage.local.set({[new Date().getTime()] : str}).then(() => {
+            str = str.replace('%', '').replace('秒', '.'); // %を削除, 秒を小数点に置き換え
+            chrome.storage.local.set({[dd.getTime()] : str}).then(() => {
                 console.log("Value is set to " + str);
             });
         }
@@ -59,10 +62,10 @@ function callback(mutationsList, observer) {
     console.log('callback(): 関数が実行されました');
     typing_content = document.getElementById('typing_content'); // ゲームのウィンドウ(iframe)
     if (typing_content) {
-        console.log('callback(): ゲームが開かれました');
+        // console.log('callback(): ゲームが開かれました');
         app = typing_content.contentWindow.document.getElementById('app');
         if (app) {
-            console.log('callback(): ゲームが読み込まれました');
+            // console.log('callback(): ゲームが読み込まれました');
             console.log('callback(): ゲーム画面の監視を開始します');
             obs_game.observe(app, options);
             // obs.disconnect();
