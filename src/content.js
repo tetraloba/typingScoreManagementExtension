@@ -24,7 +24,7 @@ function callback_game(mutationsList, observer) {
         const result_list = result_data.children[0];
         var dd = new Date();
         var str = dd.getFullYear().toString() + '/' + ('0'+(dd.getMonth() + 1)).slice(-2) + '/' + ('0'+dd.getDate()).slice(-2) + ' ' + ('0'+dd.getHours()).slice(-2) + ':' + ('0'+dd.getMinutes()).slice(-2) + ':' + ('0'+dd.getSeconds()).slice(-2) + ',';
-        var flag_end = 1;
+        var flag_end = 1; // ゲームが正常に終了したならば1, 中断された場合は0
         for (const result of result_list.children) {
             // console.log(result.children[0].textContent + ': ' + result.children[1].textContent); // 属性: 値
             str += result.children[1].textContent + ',';
@@ -66,30 +66,30 @@ function callback_game(mutationsList, observer) {
         flag_retry = 1;
     }
 }
-function callback(mutationsList, observer) {
-    console.log('callback(): 関数が実行されました');
+function callback_body(mutationsList, observer) {
+    console.log('callback_body(): 関数が実行されました');
     typing_content = document.getElementById('typing_content'); // ゲームのウィンドウ(iframe)
     if (typing_content) {
-        // console.log('callback(): ゲームが開かれました');
+        // console.log('callback_body(): ゲームが開かれました');
         app = typing_content.contentWindow.document.getElementById('app');
         if (app) {
-            // console.log('callback(): ゲームが読み込まれました');
-            console.log('callback(): ゲーム画面の監視を開始します');
+            // console.log('callback_body(): ゲームが読み込まれました');
+            console.log('callback_body(): ゲーム画面の監視を開始します');
             obs_game.observe(app, options);
             // obs.disconnect();
-            // console.log('callback(): bodyの監視が終了しました');
+            // console.log('callback_body(): bodyの監視が終了しました');
         }
     }
 }
 var app; // ゲーム
 var typing_content;
 var flag_retry = 1;
-const obs = new MutationObserver(callback);
+const obs_body = new MutationObserver(callback_body);
 const obs_game = new MutationObserver(callback_game);
 const target = document.body;
 if (!target) {
     console.error('bodyの取得に失敗しました');
 }
 console.log('test: bodyの監視を開始します');
-obs.observe(target, options);
+obs_body.observe(target, options);
 console.log('test: scriptの最終行です');
