@@ -36,23 +36,21 @@ function callback_game(mutationsList, observer) {
         const result_list = result_data.children[0];
         var dd = new Date();
         var str = dd.getFullYear().toString() + '/' + ('0'+(dd.getMonth() + 1)).slice(-2) + '/' + ('0'+dd.getDate()).slice(-2) + ' ' + ('0'+dd.getHours()).slice(-2) + ':' + ('0'+dd.getMinutes()).slice(-2) + ':' + ('0'+dd.getSeconds()).slice(-2) + ',';
-        var flag_end = 1; // ゲームが正常に終了したならば1, 中断された場合は0
-        /* ゲームの結果を読み取る */
-        for (const result of result_list.children) {
-            str += result.children[1].textContent + ',';
-            if (result.children[1].textContent == '-') { // 中断した場合
-                flag_end = 0;
+        if (result_list.children[0].children[1].textContent != '-') { // 正常終了した(中断していない)場合
+            /* ゲームの結果を読み取る */
+            for (const result of result_list.children) {
+                str += result.children[1].textContent + ',';
             }
-        }
-        str += document.getElementsByClassName('pp_description')[0].textContent; // 種類 (腕試しレベルチェックなど)
-        if (flag_end) { // 中断していない場合は記録する
+            str += document.getElementsByClassName('pp_description')[0].textContent; // 種類 (腕試しレベルチェックなど)
+            /* chrome.storage.localに記録する */
             str = str.replace('%', '').replace('秒', '.').replace('分', ':'); // %を削除, 秒を小数点に置き換え 分をコロンに置き換え
             chrome.storage.local.set({[dd.getTime()] : str}).then(() => {
                 console.log("Value is set to " + str);
             });
         }
+        /* chrome.storage.localのデータをCSVでDLするリンクを生成する */
         generateCSV();
-        /* 終了処理 */
+        /* 終了処理 (同じ結果を重複記録しないための処理) */
         flag_retry = 0;
     } else if (typing_content.contentWindow.document.getElementById('example_container')) {
         flag_retry = 1;
