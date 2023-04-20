@@ -21,13 +21,13 @@ function generateCSV() {
         }
         /* BlobとそのURLを作成して表示 */
         let bom  = new Uint8Array([0xEF, 0xBB, 0xBF]); // utf-8 BOM
-        var str_url = URL.createObjectURL(new Blob([bom, str_blob], {type: "text/csv"}));
+        var str_url = URL.createObjectURL(new Blob([bom, str_blob], {type: "text/csv"})); // URLの生成
         const comment = app.children[0].children[0].children[2];
         var new_element = document.createElement("a");
         new_element.download = 'result.csv';
         new_element.href = str_url;
         new_element.textContent = 'Download result.csv here!';
-        comment.appendChild(new_element);
+        comment.appendChild(new_element); // コメント部分にURLを追加
     });
 }
 function callback_game(mutationsList, observer) {
@@ -42,8 +42,8 @@ function callback_game(mutationsList, observer) {
                 str += result.children[1].textContent + ',';
             }
             str += document.getElementsByClassName('pp_description')[0].textContent; // 種類 (腕試しレベルチェックなど)
+            str = str.replace('%', '').replace('秒', '.').replace('分', ':'); // フォーマットを調整する
             /* chrome.storage.localに記録する */
-            str = str.replace('%', '').replace('秒', '.').replace('分', ':'); // %を削除, 秒を小数点に置き換え 分をコロンに置き換え
             chrome.storage.local.set({[dd.getTime()] : str}).then(() => {
                 console.log("Value is set to " + str);
             });
@@ -63,6 +63,7 @@ function callback_body(mutationsList, observer) {
         app = typing_content.contentWindow.document.getElementById('app');
         if (app) {
             console.log('callback_body(): ゲーム画面の監視を開始します');
+            flag_retry = 1;
             obs_game.observe(app, options);
         }
     }
@@ -71,7 +72,7 @@ function callback_body(mutationsList, observer) {
 /* main */
 var app; // ゲーム
 var typing_content;
-var flag_retry = 1;
+var flag_retry; // ゲーム開始(及びリトライ)時に1, 終了時に0
 const obs_body = new MutationObserver(callback_body);
 const obs_game = new MutationObserver(callback_game);
 const target = document.body;
