@@ -29,12 +29,12 @@
     //     "default_popup": "popup.html"
     // },
     "permissions": [
-      "tabs",
+    //   "tabs",
       "storage"
-    ],
-    "host_permissions": [ // 必要かどうかすら不明
-    "https://*/*",
-    "http://*/*",
-    "file:///*/*"
     ]
+    // "host_permissions": [ // 必要かどうかすら不明
+    // "https://*/*",
+    // "http://*/*",
+    // "file:///*/*"
+    // ]
 }

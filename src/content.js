@@ -35,7 +35,12 @@ function callback_game(mutationsList, observer) {
     if (flag_retry && result_data) {
         const result_list = result_data.children[0];
         var dd = new Date();
-        var str = dd.getFullYear().toString() + '/' + ('0'+(dd.getMonth() + 1)).slice(-2) + '/' + ('0'+dd.getDate()).slice(-2) + ' ' + ('0'+dd.getHours()).slice(-2) + ':' + ('0'+dd.getMinutes()).slice(-2) + ':' + ('0'+dd.getSeconds()).slice(-2) + ',';
+        var str = dd.getFullYear().toString() + '/'
+                + ('0'+(dd.getMonth() + 1)).slice(-2) + '/'
+                + ('0'+dd.getDate()).slice(-2) + ' '
+                + ('0'+dd.getHours()).slice(-2) + ':'
+                + ('0'+dd.getMinutes()).slice(-2) + ':'
+                + ('0'+dd.getSeconds()).slice(-2) + ',';
         if (result_list.children[0].children[1].textContent != '-') { // 正常終了した(中断していない)場合
             /* ゲームの結果を読み取る */
             for (const result of result_list.children) {
