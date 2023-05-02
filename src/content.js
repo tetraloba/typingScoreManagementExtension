@@ -14,16 +14,16 @@ const options = {
 function generateCSV() {
     /* chrome.storage.localの内容を表示 */
     chrome.storage.local.get(null, function (data) {
-        var str_blob = '';
-        var allValues = Object.values(data);
+        let str_blob = '';
+        const allValues = Object.values(data);
         for (const v of allValues) {
             str_blob += v + "\n";
         }
         /* BlobとそのURLを作成して表示 */
-        let bom  = new Uint8Array([0xEF, 0xBB, 0xBF]); // utf-8 BOM
-        var str_url = URL.createObjectURL(new Blob([bom, str_blob], {type: "text/csv"})); // URLの生成
+        const bom  = new Uint8Array([0xEF, 0xBB, 0xBF]); // utf-8 BOM
+        const str_url = URL.createObjectURL(new Blob([bom, str_blob], {type: "text/csv"})); // URLの生成
         const comment = app.children[0].children[0].children[2];
-        var new_element = document.createElement("a");
+        const new_element = document.createElement("a");
         new_element.download = 'result.csv';
         new_element.href = str_url;
         new_element.textContent = 'Download result.csv here!';
@@ -34,8 +34,8 @@ function callback_game(mutationsList, observer) {
     const result_data = app.getElementsByClassName('result_data')[0];
     if (flag_retry && result_data) {
         const result_list = result_data.children[0];
-        var dd = new Date();
-        var str = dd.getFullYear().toString() + '/'
+        const dd = new Date();
+        let str = dd.getFullYear().toString() + '/'
                 + ('0'+(dd.getMonth() + 1)).slice(-2) + '/'
                 + ('0'+dd.getDate()).slice(-2) + ' '
                 + ('0'+dd.getHours()).slice(-2) + ':'
@@ -75,9 +75,9 @@ function callback_body(mutationsList, observer) {
 }
 
 /* main */
-var app; // ゲーム
-var typing_content;
-var flag_retry; // ゲーム開始(及びリトライ)時に1, 終了時に0
+let app; // ゲーム
+let typing_content;
+let flag_retry; // ゲーム開始(及びリトライ)時に1, 終了時に0
 const obs_body = new MutationObserver(callback_body);
 const obs_game = new MutationObserver(callback_game);
 const target = document.body;
