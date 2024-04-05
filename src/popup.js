@@ -17,6 +17,56 @@ function getCSV() {
         });
     });
 }
+/* データベースに保存された内容をconsoleに表示する */
+function showDB() {
+    chrome.storage.local.get(null, ((data) => {console.log(data)}));
+}
+/* データベースに保存された記録を全て削除(リセット)する */
+function clearDB() {
+    /* clearDB_button を隠す */
+    const clearDB_button = document.getElementById('clearDB_button');
+    clearDB_button.hidden = true;
+    /* 確認メッセージを表示 */
+    const message_text = document.getElementById('message_text');
+    message_text.textContent = "All typing records in the database are deleted and cannot be recovered.\n Are you sure you want to delete them? (Y/n)";
+    /* ユーザのプロンプト入力用textAreaの表示 */
+    const prompt = document.getElementById('prompt');
+    prompt.hidden = false;
+    /* confirm_button の表示 */
+    const confirm_button = document.getElementById('confirm_button');
+    confirm_button.hidden = false;
+    /* cancel_button の表示 */
+    const cancel_button = document.getElementById('cancel_button');
+    cancel_button.hidden = false;
+    /* confirm_button を押した時の処理 */
+    confirm_button.addEventListener('click', function () {
+        let confirmation = prompt.value.trim();
+        if (confirmation && confirmation == 'Y') {
+            console.log('Database has been cleared.'); // debug
+            message_text.textContent = 'Database has been cleared.';
+            /* 実際にデータベースをクリアする処理 */
+            // chrome.storage.local.clear();
+        } else {
+            console.log('Database is not cleared. (cancelled)'); // debug
+            message_text.textContent = 'Database is not cleared. (cancelled)';
+        }
+        prompt.hidden = true;
+        confirm_button.hidden = true;
+        cancel_button.hidden = true;
+        /* clearDB_button を再表示 */
+        clearDB_button.hidden = false;
+    })
+    /* cancel_button を押した時の処理 */
+    cancel_button.addEventListener('click', function () {
+        document.getElementById('message_text').textContent = "cancelled.";
+        prompt.hidden = true;
+        confirm_button.hidden = true;
+        cancel_button.hidden = true;
+        /* clearDB_button を再表示 */
+        clearDB_button.hidden = false;
+    })
+
+}
 
 /* main */
 document.addEventListener('DOMContentLoaded', function () {
@@ -25,5 +75,15 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('dl_button').addEventListener('click', function () {
         console.log('download button clicked!'); // debug
         getCSV();
+    })
+    /* データベース表示ボタンの動作を登録 */
+    document.getElementById('showDB_button').addEventListener('click', function () {
+        console.log('show DB button clicked!'); //debug
+        showDB();
+    })
+    /* データベース削除(リセット)ボタンの動作を登録 */
+    document.getElementById('clearDB_button').addEventListener('click', function () {
+        console.log('clear DB button clicked!'); //debug
+        clearDB();
     })
 })
