@@ -17,6 +17,31 @@ function getCSV() {
         });
     });
 }
+/* textAreaに入力されたCSV形式の結果をデータベースに登録する */
+function pushCSV() {
+    // 文字列の形式が不正だった場合などの例外処理を一切していない #todo
+    let csv_text = document.getElementById('result_csv').value;
+    for (let line of csv_text.split('\n')) { // \r(キャリッジリターン)の対策は必要？ #todo
+        if (line.length < 8) {
+            continue; // 空行など、文字数が少なすぎる場合は処理しない
+        }
+        let date_text = line.substr(0, line.indexOf(',')).replaceAll('"', ''); // 日時を表す文字列"yyyy/mm/dd HH:MM:SS"を取得
+        const year = parseInt(date_text.substr(0, 4));
+        const month = parseInt(date_text.substr(5, 7)) - 1;
+        const day = parseInt(date_text.substr(8, 10));
+        const hours = parseInt(date_text.substr(11, 13));
+        const minutes = parseInt(date_text.substr(14, 16));
+        const seconds = parseInt(date_text.substr(17, 19));
+        // console.log(year, month, day, hours, minutes, seconds); // debug
+        const dd = new Date(year, month, day, hours, minutes, seconds);
+        // console.log(dd.getTime()); // debug
+        // console.log(line); // debug
+        /* chrome.storage.localに記録する */
+        chrome.storage.local.set({[dd.getTime()] : line}).then(() => {
+            console.log("Value is set to " + line);
+        });
+    }
+}
 /* データベースに保存された内容をconsoleに表示する */
 function showDB() {
     chrome.storage.local.get(null, ((data) => {console.log(data)}));
@@ -75,6 +100,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('dl_button').addEventListener('click', function () {
         console.log('download button clicked!'); // debug
         getCSV();
+    })
+    /* インポートボタンの動作を登録 */
+    document.getElementById('push_button').addEventListener('click', function () {
+        console.log('import button clicked!'); //debug
+        pushCSV();
     })
     /* データベース表示ボタンの動作を登録 */
     document.getElementById('showDB_button').addEventListener('click', function () {
