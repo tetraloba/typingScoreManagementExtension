@@ -70,7 +70,7 @@ function clearDB() {
             console.log('Database has been cleared.'); // debug
             message_text.textContent = 'Database has been cleared.';
             /* 実際にデータベースをクリアする処理 */
-            // chrome.storage.local.clear();
+            chrome.storage.local.clear();
         } else {
             console.log('Database is not cleared. (cancelled)'); // debug
             message_text.textContent = 'Database is not cleared. (cancelled)';
