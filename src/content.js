@@ -30,6 +30,10 @@ function generateCSV() {
         comment.appendChild(new_element); // コメント部分にURLを追加
     });
 }
+/* 文字列をダブルクォーテーションで括った文字列を返す */
+function dquote_enclose(some_string) {
+    return '"' + some_string.replaceAll('"', '\\"') + '"';
+}
 function callback_game(mutationsList, observer) {
     const result_data = app.getElementsByClassName('result_data')[0];
     if (flag_retry && result_data) {
@@ -40,13 +44,14 @@ function callback_game(mutationsList, observer) {
                 + ('0'+dd.getDate()).slice(-2) + ' '
                 + ('0'+dd.getHours()).slice(-2) + ':'
                 + ('0'+dd.getMinutes()).slice(-2) + ':'
-                + ('0'+dd.getSeconds()).slice(-2) + ',';
+                + ('0'+dd.getSeconds()).slice(-2);
+        str = dquote_enclose(str) + ',';
         if (result_list.children[0].children[1].textContent != '-') { // 正常終了した(中断していない)場合
             /* ゲームの結果を読み取る */
             for (const result of result_list.children) {
-                str += result.children[1].textContent + ',';
+                str += dquote_enclose(result.children[1].textContent) + ',';
             }
-            str += document.getElementsByClassName('pp_description')[0].textContent; // 種類 (腕試しレベルチェックなど)
+            str += dquote_enclose(document.getElementsByClassName('pp_description')[0].textContent); // 種類 (腕試しレベルチェックなど)
             str = str.replace('%', '').replace('秒', '.').replace('分', ':'); // フォーマットを調整する
             /* chrome.storage.localに記録する */
             chrome.storage.local.set({[dd.getTime()] : str}).then(() => {
