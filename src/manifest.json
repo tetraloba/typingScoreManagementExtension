@@ -20,17 +20,15 @@
     //     ],
     //     "persistent": false
     // }
-    // "browser_action": { // のちのち
-    //     "default_icon": {
-    //         "19": "images/icon/icon_19.png",
-    //         "38": "images/icon/icon_38.png"
-    //     },
-    //     "default_title": "Link Checker",
-    //     "default_popup": "popup.html"
-    // },
+    "action": {
+        // "default_icon": "images/icon/icon_38.png",
+        "default_title": "Typing Score Management",
+        "default_popup": "popup.html"
+    },
     "permissions": [
     //   "tabs",
-      "storage"
+      "storage", // 結果をデータベースに保存するため
+      "downloads" // 結果のCSVファイルをDLするため
     ]
     // "host_permissions": [ // 必要かどうかすら不明
     // "https://*/*",
