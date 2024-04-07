@@ -116,4 +116,8 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('clear DB button clicked!'); //debug
         clearDB();
     })
+    /* showGraphボタンの動作を登録 */
+    document.getElementById('showGraph_button').addEventListener('click', function () {
+        chrome.tabs.create({url: 'graph.html'}, tab => {});
+    })
 })
